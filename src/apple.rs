@@ -5,6 +5,10 @@ use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::path::PathBuf;
 
+// We need to link to Foundation to access the NSFileManager class
+#[link(name = "Foundation", kind = "framework")]
+extern "C" {}
+
 /// Type of directory to lookup from macOS/iOS
 #[repr(u64)]
 pub enum SearchPathDirectory {
