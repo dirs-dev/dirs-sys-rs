@@ -40,23 +40,34 @@ pub enum SearchPathDirectory {
     Music = 18,
     /// Pictures folder, ~/Pictures
     Pictures = 19,
+    /// PPDs folder, Library/Printers/PPDs
     PrinterDescription = 20,
+    /// Public folder, ~/Public
     SharedPublic = 21,
+    /// Preference Panes, Library/PreferencePanes
     PreferencePanes = 22,
+    /// User scripts folder for calling application, ~/Library/Application Scripts/code-signing-id
     ApplicationScripts = 23,
+    /// Trash folder
     Trash = 102,
 }
 
+/// Domain for path to return, dirs currently mostly deals with user dirs so likely want UserDomain
 #[repr(u64)]
 pub enum SearchPathDomainMask {
+    /// Looks up directory in user's domain, so ~
     UserDomain = 1,
+    /// Local system domain, which is folders typically found in /Library
     LocalDomain = 2,
+    /// Publically available locations on the local network
     NetworkDomain = 4,
+    /// Read only system locations, /System (may be completely unavailable on newer systems?)
     SystemDomain = 8,
+    /// Looks up directories in all of the current domains and future ones apple may add
     AllDomains = 65535,
 }
 
-/// Returns first path found on macOS/iOS systems given the requested type of path, within the domain
+/// Returns first path found on macOS/iOS systems given the requested type of path, within given domain
 ///
 /// Even if a path is returned, it may not exist yet and require creation
 pub fn path_for_dir(dir: SearchPathDirectory, domain: SearchPathDomainMask) -> Option<PathBuf> {
@@ -83,6 +94,7 @@ pub fn path_for_dir(dir: SearchPathDirectory, domain: SearchPathDomainMask) -> O
     });
     result
 }
+
 /// Returns user's home directory, or sandbox if called within sandboxed app
 pub fn home_dir() -> Option<PathBuf> {
     unsafe {

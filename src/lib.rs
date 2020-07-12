@@ -16,9 +16,14 @@ pub fn is_absolute_path(path: OsString) -> Option<PathBuf> {
 extern crate libc;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
-pub mod apple;
+mod apple;
+#[cfg(any(target_os = "macos", target_os = "ios"))]
+pub use apple::{home_dir, path_for_dir, SearchPathDirectory, SearchPathDomainMask};
 
-#[cfg(all(unix, not(target_os = "redox")))]
+#[cfg(all(
+    unix,
+    not(any(target_os = "redox", target_os = "macos", target_os = "ios"))
+))]
 mod target_unix_not_redox {
 
     use std::env;
@@ -72,7 +77,10 @@ mod target_unix_not_redox {
     }
 }
 
-#[cfg(all(unix, not(target_os = "redox")))]
+#[cfg(all(
+    unix,
+    not(any(target_os = "redox", target_os = "macos", target_os = "ios"))
+))]
 pub use self::target_unix_not_redox::home_dir;
 
 #[cfg(target_os = "redox")]
