@@ -16,6 +16,9 @@ pub fn is_absolute_path(path: OsString) -> Option<PathBuf> {
 extern crate libc;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
+extern crate objc;
+
+#[cfg(any(target_os = "macos", target_os = "ios"))]
 mod apple;
 #[cfg(any(target_os = "macos", target_os = "ios"))]
 pub use apple::{home_dir, path_for_dir, SearchPathDirectory, SearchPathDomainMask};
