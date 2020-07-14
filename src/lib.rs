@@ -16,6 +16,7 @@ pub fn is_absolute_path(path: OsString) -> Option<PathBuf> {
 extern crate libc;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]
+#[macro_use]
 extern crate objc;
 
 #[cfg(any(target_os = "macos", target_os = "ios"))]

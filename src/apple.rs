@@ -1,6 +1,5 @@
 use objc::rc::autoreleasepool;
 use objc::runtime::Object;
-use objc::{class, msg_send, sel, sel_impl};
 use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::path::PathBuf;
