@@ -158,6 +158,7 @@ pub fn known_folder(folder_id: shtypes::REFKNOWNFOLDERID) -> Option<PathBuf> {
             combaseapi::CoTaskMemFree(path_ptr as *mut winapi::ctypes::c_void);
             Some(PathBuf::from(ostr))
         } else {
+            combaseapi::CoTaskMemFree(path_ptr as *mut winapi::ctypes::c_void);
             None
         }
     }
