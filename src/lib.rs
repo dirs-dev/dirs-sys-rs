@@ -148,8 +148,8 @@ use super::winapi::shared::winerror;
 use super::winapi::um::{combaseapi, knownfolders, shlobj, shtypes, winbase, winnt};
 
 pub fn known_folder(folder_id: shtypes::REFKNOWNFOLDERID) -> Option<PathBuf> {
+    let mut path_ptr: winnt::PWSTR = ptr::null_mut();
     unsafe {
-        let mut path_ptr: winnt::PWSTR = ptr::null_mut();
         let result = shlobj::SHGetKnownFolderPath(folder_id, 0, ptr::null_mut(), &mut path_ptr);
         if result == winerror::S_OK {
             let len = winbase::lstrlenW(path_ptr) as usize;
