@@ -27,7 +27,7 @@ use std::ptr;
 
 use super::libc;
 
-// https://github.com/rust-lang/rust/blob/master/src/libstd/sys/unix/os.rs#L498
+// https://github.com/rust-lang/rust/blob/2682b88c526d493edeb2d3f2df358f44db69b73f/library/std/src/sys/unix/os.rs#L595
 pub fn home_dir() -> Option<PathBuf> {
     return env::var_os("HOME")
         .and_then(|h| if h.is_empty() { None } else { Some(h) })
