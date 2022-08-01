@@ -1,9 +1,7 @@
-[![crates.io](https://img.shields.io/crates/v/dirs-sys.svg)](https://crates.io/crates/dirs-sys)
-[![API documentation](https://docs.rs/dirs-sys/badge.svg)](https://docs.rs/dirs-sys/)
-![actively developed](https://img.shields.io/badge/maintenance-as--is-yellow.svg)
-[![TravisCI status](https://img.shields.io/travis/dirs-dev/dirs-sys-rs/master.svg?label=Linux/macOS%20build)](https://travis-ci.org/dirs-dev/dirs-sys-rs)
-[![AppVeyor status](https://img.shields.io/appveyor/ci/soc/dirs-sys-rs/master.svg?label=Windows%20build)](https://ci.appveyor.com/project/soc/dirs-sys-rs/branch/master)
-![License: MIT/Apache-2.0](https://img.shields.io/badge/license-MIT%2FApache--2.0-orange.svg)
+[![crates.io](https://img.shields.io/crates/v/dirs-sys.svg?style=for-the-badge)](https://crates.io/crates/dirs-sys)
+[![API documentation](https://img.shields.io/docsrs/dirs-sys/latest?style=for-the-badge)](https://docs.rs/dirs-sys/)
+![actively developed](https://img.shields.io/badge/maintenance-as--is-yellow.svg?style=for-the-badge)
+![License: MIT/Apache-2.0](https://img.shields.io/badge/license-MIT%2FApache--2.0-orange.svg?style=for-the-badge)
 
 # `dirs-sys`
 
