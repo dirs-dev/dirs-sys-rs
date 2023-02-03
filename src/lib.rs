@@ -176,7 +176,7 @@ pub fn known_folder_roaming_app_data() -> Option<PathBuf> {
 }
 
 pub fn known_folder_local_app_data() -> Option<PathBuf> {
-    known_folder(Shell::FOLDERID_RoamingAppData)
+    known_folder(Shell::FOLDERID_LocalAppData)
 }
 
 pub fn known_folder_music() -> Option<PathBuf> {
