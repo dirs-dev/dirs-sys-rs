@@ -12,19 +12,17 @@ pub fn is_absolute_path(path: OsString) -> Option<PathBuf> {
     }
 }
 
-#[cfg(all(unix, not(target_os = "redox")))]
+#[cfg(all(unix, not(target_os = "redox"), feature = "libc"))]
 extern crate libc;
 
 #[cfg(all(unix, not(target_os = "redox")))]
 mod target_unix_not_redox {
 
 use std::env;
-use std::ffi::{CStr, OsString};
-use std::mem;
-use std::os::unix::ffi::OsStringExt;
+use std::ffi::OsString;
 use std::path::PathBuf;
-use std::ptr;
 
+#[cfg(feature = "libc")]
 use super::libc;
 
 // https://github.com/rust-lang/rust/blob/2682b88c526d493edeb2d3f2df358f44db69b73f/library/std/src/sys/unix/os.rs#L595
@@ -34,12 +32,27 @@ pub fn home_dir() -> Option<PathBuf> {
         .or_else(|| unsafe { fallback() })
         .map(PathBuf::from);
 
-    #[cfg(any(target_os = "android", target_os = "ios", target_os = "emscripten"))]
+    #[cfg(any(
+        target_os = "android",
+        target_os = "ios",
+        target_os = "emscripten",
+        not(feature = "getpwuid")
+    ))]
     unsafe fn fallback() -> Option<OsString> {
         None
     }
-    #[cfg(not(any(target_os = "android", target_os = "ios", target_os = "emscripten")))]
+    #[cfg(not(any(
+        target_os = "android",
+        target_os = "ios",
+        target_os = "emscripten",
+        not(feature = "getpwuid")
+    )))]
     unsafe fn fallback() -> Option<OsString> {
+        use std::ffi::CStr;
+        use std::mem;
+        use std::os::unix::ffi::OsStringExt;
+        use std::ptr;
+
         let amt = match libc::sysconf(libc::_SC_GETPW_R_SIZE_MAX) {
             n if n < 0 => 512 as usize,
             n => n as usize,
