@@ -1,3 +1,5 @@
+extern crate option_ext;
+
 use std::ffi::OsString;
 use std::path::PathBuf;
 
