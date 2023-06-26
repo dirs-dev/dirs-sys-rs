@@ -6,8 +6,6 @@ use std::os::unix::ffi::OsStringExt;
 use std::path::{Path, PathBuf};
 use std::str;
 
-use option_ext::OptionExt;
-
 /// Returns all XDG user directories obtained from $(XDG_CONFIG_HOME)/user-dirs.dirs.
 pub fn all(home_dir_path: &Path, user_dir_file_path: &Path) -> HashMap<String, PathBuf> {
     let bytes = read_all(user_dir_file_path).unwrap_or(Vec::new());
@@ -34,7 +32,7 @@ fn parse_user_dirs(home_dir: &Path, user_dir: Option<&str>, bytes: &[u8]) -> Has
         let key = if key.starts_with(b"XDG_") && key.ends_with(b"_DIR") {
             match str::from_utf8(&key[4..key.len()-4]) {
                 Ok(key) =>
-                    if user_dir.contains(&key) {
+                    if user_dir.is_some() && option_contains(user_dir, key) {
                         single_dir_found = true;
                         key
                     } else if user_dir.is_none() {
@@ -139,12 +137,18 @@ fn shell_unescape(escaped: &[u8]) -> Vec<u8> {
     unescaped
 }
 
+fn option_contains<T : PartialEq>(option: Option<T>, value: T) -> bool {
+    match option {
+        Some(val) => val == value,
+        None => false
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
     use std::path::{Path, PathBuf};
-
-    use super::{parse_user_dirs, shell_unescape, split_once, trim_blank};
+    use super::{trim_blank, shell_unescape, split_once, parse_user_dirs};
 
     #[test]
     fn test_trim_blank() {
