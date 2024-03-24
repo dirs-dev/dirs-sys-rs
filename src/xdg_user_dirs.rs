@@ -10,13 +10,13 @@ use option_ext::OptionExt;
 
 /// Returns all XDG user directories obtained from $(XDG_CONFIG_HOME)/user-dirs.dirs.
 pub fn all(home_dir_path: &Path, user_dir_file_path: &Path) -> HashMap<String, PathBuf> {
-    let bytes = read_all(user_dir_file_path).unwrap_or(Vec::new());
+    let bytes = read_all(user_dir_file_path).unwrap_or_default();
     parse_user_dirs(home_dir_path, None, &bytes)
 }
 
 /// Returns a single XDG user directory obtained from $(XDG_CONFIG_HOME)/user-dirs.dirs.
 pub fn single(home_dir_path: &Path, user_dir_file_path: &Path, user_dir_name: &str) -> HashMap<String, PathBuf> {
-    let bytes = read_all(user_dir_file_path).unwrap_or(Vec::new());
+    let bytes = read_all(user_dir_file_path).unwrap_or_default();
     parse_user_dirs(home_dir_path, Some(user_dir_name), &bytes)
 }
 
@@ -31,8 +31,8 @@ fn parse_user_dirs(home_dir: &Path, user_dir: Option<&str>, bytes: &[u8]) -> Has
         };
 
         let key = trim_blank(key);
-        let key = if key.starts_with(b"XDG_") && key.ends_with(b"_DIR") {
-            match str::from_utf8(&key[4..key.len()-4]) {
+        let key = if let Some(key) = key.strip_prefix(b"XDG_").and_then(|key| key.strip_suffix(b"_DIR")) {
+            match str::from_utf8(key) {
                 Ok(key) =>
                     if user_dir.contains(&key) {
                         single_dir_found = true;
@@ -50,9 +50,7 @@ fn parse_user_dirs(home_dir: &Path, user_dir: Option<&str>, bytes: &[u8]) -> Has
 
         // xdg-user-dirs-update uses double quotes and we don't support anything else.
         let value = trim_blank(value);
-        let mut value = if value.starts_with(b"\"") && value.ends_with(b"\"") {
-            &value[1..value.len()-1]
-        } else {
+        let Some(mut value) = value.strip_prefix(b"\"").and_then(|value| value.strip_suffix(b"\"")) else {
             continue
         };
 
@@ -62,8 +60,8 @@ fn parse_user_dirs(home_dir: &Path, user_dir: Option<&str>, bytes: &[u8]) -> Has
             // Source: https://www.freedesktop.org/wiki/Software/xdg-user-dirs/
             // Additionally directory is reassigned to homedir when removed.
             continue
-        } else if value.starts_with(b"$HOME/") {
-            value = &value[b"$HOME/".len()..];
+        } else if let Some(v) = value.strip_prefix(b"$HOME/") {
+            value = v;
             true
         } else if value.starts_with(b"/") {
             false
